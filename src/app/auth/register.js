@@ -44,6 +44,10 @@ angular.module( 'pawTracker.register', [
             confirmPassword: null
         };
 
+        if(ipCookie('Test')) {
+            $scope.registered = true;
+        }
+
         $scope.newUser.register = function() {
             var a = 1;
             $http.post(apiBase + '/API/Account/Register', $scope.newUser)

@@ -22,15 +22,12 @@ angular.module( 'pawTracker', [
                     if(!request.headers.Authorization &&
                         (request.disableAuthToken === false || request.disableAuthToken === undefined)) {
                         //add our auth header as required unless one is already present
-                        request.headers.Authorization = 'Bearer ' + ipCookie('Test');
+                        var cookie = ipCookie('Test');
+                        if (cookie) {
+                            request.headers.Authorization = 'Bearer ' + cookie;
+                        }
                     }
                     return request;
-                },
-                responseError: function(response) {
-                    if(response.status === 401) {
-                        userAuthService.handle401(response);
-                    }
-                    return $q.reject(response);
                 }
             };
         }]);

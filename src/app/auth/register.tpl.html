@@ -1,5 +1,5 @@
 <form ng-submit="newUser.register()" >
-    <div class="row">
+    <div ng-if="!registered" class="row">
         <div class="col-md-4" >
             <input  type="text" ng-model="newUser.email" placeholder="email" required/> *
         </div>
@@ -11,11 +11,12 @@
             <span ng-show="newUser.password !== newUser.confirmPassword">Passwords must match.</span>
         </div>
     </div>
-    <button type="button" ng-click="getPuppies()" ng-if="registered">Get Puppies!</button>
-    <div class="row">
+    <div ng-if="!registered" class="row">
         <div class="col-md-12">
             <button type="submit" >Register</button>
         </div>
-
+    </div>
+    <div ng-if="registered">You have already registered.  Click to view your puppies!
+        <button type="button" ng-click="getPuppies()" >Get Puppies!</button>
     </div>
 </form>
