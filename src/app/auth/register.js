@@ -80,9 +80,13 @@ angular.module( 'pawTracker.register', [
                 });
         };
 
-        $scope.getPuppies = function () {
-            $http.get(apiBase + '/API/puppies').success(function () {
-                console.log('Success!');
+        $scope.getLitters = function () {
+            $http.get(apiBase + '/API/litters').success(function (data) {
+                var litters = [];
+                data.forEach(function (litter) {
+                    litters.push(new Litter(litter));
+                });
+                console.log('Success!: ' + litters);
             });
         };
     });
