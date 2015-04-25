@@ -1,0 +1,20 @@
+<form ng-submit="newUser.register()" >
+    <div class="row">
+        <div class="col-md-4" >
+            <input  type="text" ng-model="newUser.email" placeholder="email" required/> *
+        </div>
+        <div class="col-md-4">
+            <input type="text" ng-model="newUser.password" placeholder="password" required /> *
+        </div>
+        <div class="col-md-4">
+            <input type="text" ng-model="newUser.confirmPassword" placeholder="password" required /> *
+            <span ng-show="newUser.password !== newUser.confirmPassword">Passwords must match.</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" >Register</button>
+        </div>
+
+    </div>
+</form>
