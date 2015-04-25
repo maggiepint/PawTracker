@@ -37,7 +37,7 @@ angular.module( 'pawTracker.register', [
 /**
  * And of course we define a controller for our route.
  */
-    .controller( 'Register', function RegisterController( $scope, $timeout, apiBase, $http, userContext ) {
+    .controller( 'Register', function RegisterController( $scope, $timeout, apiBase, $http, userContext, ipCookie ) {
         $scope.newUser = {
             email: null,
             password:null,
@@ -48,34 +48,38 @@ angular.module( 'pawTracker.register', [
             var a = 1;
             $http.post(apiBase + '/API/Account/Register', $scope.newUser)
                 .success(function () {
-                    var timer = $timeout(function () {
-                        $timeout.cancel(timer);
-                        $http({
-                            method: 'POST',
-                            url: apiBase + '/Token',
-                            data: {
-                                username: $scope.newUser.email,
-                                password: $scope.newUser.password,
-                                grant_type: 'password'
-                            },
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            transformRequest: function (obj) {
-                                var str = [];
-                                for (var p in obj) {
-                                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                                }
-
-                                return str.join("&");
+                    $http({
+                        method: 'POST',
+                        url: apiBase + '/Token',
+                        data: {
+                            username: $scope.newUser.email,
+                            password: $scope.newUser.password,
+                            grant_type: 'password'
+                        },
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        transformRequest: function (obj) {
+                            var str = [];
+                            for (var p in obj) {
+                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                             }
-                        }).success(function (data) {
-                            userContext.email = $scope.email;
-                            userContext.token = data;
 
-                        });
-                    }, 2000);
+                            return str.join("&");
+                        }
+                    }).success(function (data) {
+                        ipCookie('Test', data.access_token);
+                        userContext.email = $scope.email;
+                        userContext.token = data;
+                        $scope.registered = true;
+                    });
                 });
+        };
+
+        $scope.getPuppies = function () {
+            $http.get(apiBase + '/API/puppies').success(function () {
+                console.log('Success!');
+            });
         };
     });
 

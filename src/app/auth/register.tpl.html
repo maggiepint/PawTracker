@@ -11,6 +11,7 @@
             <span ng-show="newUser.password !== newUser.confirmPassword">Passwords must match.</span>
         </div>
     </div>
+    <button type="button" ng-click="getPuppies()" ng-if="registered">Get Puppies!</button>
     <div class="row">
         <div class="col-md-12">
             <button type="submit" >Register</button>

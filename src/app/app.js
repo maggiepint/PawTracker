@@ -3,16 +3,37 @@ angular.module( 'pawTracker', [
   'templates-common',
   'pawTracker.home',
     'pawTracker.register',
-  'ui.router'
+  'ui.router',
+    'ipCookie'
 ]).constant('apiBase', 'http://pawtracks.azurewebsites.net') //see docs at http://pawtracks.azurewebsites.net/Help.
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider ) {
   $urlRouterProvider.otherwise( '/home' );
 })
     .config(function enableCors($httpProvider){
-        $httpProvider.defaults.useXDomain = true;
-        delete $httpProvider.defaults.headers.common["X-Requested-With"];
-        $httpProvider.defaults.headers.common["Accept"] = "application/json";
-        $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
+        //$httpProvider.defaults.useXDomain = true;
+        //delete $httpProvider.defaults.headers.common["X-Requested-With"];
+        //$httpProvider.defaults.headers.common["Accept"] = "application/json";
+        //$httpProvider.defaults.headers.common["Content-Type"] = "application/json";
+    })
+    .config(function config($httpProvider) {
+        $httpProvider.interceptors.push(['$q', 'ipCookie', function($q, ipCookie) {
+            return {
+                request: function(request) {
+                    if(!request.headers.Authorization &&
+                        (request.disableAuthToken === false || request.disableAuthToken === undefined)) {
+                        //add our auth header as required unless one is already present
+                        request.headers.Authorization = 'Bearer ' + ipCookie('Test');
+                    }
+                    return request;
+                },
+                responseError: function(response) {
+                    if(response.status === 401) {
+                        userAuthService.handle401(response);
+                    }
+                    return $q.reject(response);
+                }
+            };
+        }]);
     })
 
 .run( function run () {
