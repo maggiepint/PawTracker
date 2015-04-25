@@ -37,41 +37,45 @@ angular.module( 'pawTracker.register', [
 /**
  * And of course we define a controller for our route.
  */
-    .controller( 'Register', function RegisterController( $scope, apiBase, $http, userContext ) {
+    .controller( 'Register', function RegisterController( $scope, $timeout, apiBase, $http, userContext ) {
         $scope.newUser = {
             email: null,
             password:null,
             confirmPassword: null
         };
 
-        $scope.newUser.register = function(){
+        $scope.newUser.register = function() {
             var a = 1;
             $http.post(apiBase + '/API/Account/Register', $scope.newUser)
-                .success($http({method: 'POST',
-                    url: apiBase + '/Token',
-                    data: {
-                        username:$scope.newUser.email,
-                        password: $scope.newUser.password,
-                        grant_type:'password'
-                    },
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    transformRequest: function(obj) {
-                        var str = [];
-                        for(var p in obj)
-                        {
-                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                        }
+                .success(function () {
+                    var timer = $timeout(function () {
+                        $timeout.cancel(timer);
+                        $http({
+                            method: 'POST',
+                            url: apiBase + '/Token',
+                            data: {
+                                username: $scope.newUser.email,
+                                password: $scope.newUser.password,
+                                grant_type: 'password'
+                            },
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            transformRequest: function (obj) {
+                                var str = [];
+                                for (var p in obj) {
+                                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                                }
 
-                        return str.join("&");
-                    }
-                }).success(function(data){
-                    userContext.email = $scope.email;
-                    userContext.token = data;
+                                return str.join("&");
+                            }
+                        }).success(function (data) {
+                            userContext.email = $scope.email;
+                            userContext.token = data;
 
-                })
-            );
+                        });
+                    }, 2000);
+                });
         };
     });
 
