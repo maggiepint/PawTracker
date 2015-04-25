@@ -50,7 +50,7 @@ angular.module( 'pawTracker.register', [
                 .success($http({method: 'POST',
                     url: apiBase + '/Token',
                     data: {
-                        username:$scope.newUser.username,
+                        username:$scope.newUser.email,
                         password: $scope.newUser.password,
                         grant_type:'password'
                     },
